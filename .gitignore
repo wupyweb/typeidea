@@ -1,0 +1,5 @@
+.idea
+typeidea-env
+*.pyc
+*.swp
+*.sqlite3
