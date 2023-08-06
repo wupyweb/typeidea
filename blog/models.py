@@ -80,4 +80,4 @@ class Post(models.Model):
         ordering = ['-id'] # 根据id进行降序排列
 
     def __str__(self) -> str:
-        return self.name
+        return self.title
