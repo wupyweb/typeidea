@@ -21,6 +21,24 @@ class Category(models.Model):
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.PROTECT)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
+    @classmethod
+    def get_navs(cls):
+        categories = cls.objects.filter(status=cls.STATUS_NORMAL)
+        # 这里会产生两次查询，两次IO操作，优化成下面一次IO操作，严谨
+        # nav_categories = categories.filter(is_nav=True)
+        # normal_categories = categories.filter(is_nav=False)
+        nav_categories = []
+        normal_categories = []
+        for cate in categories:
+            if cate.is_nav:
+                nav_categories.append(cate)
+            else:
+                normal_categories.append(cate)
+        return {
+            'navs': nav_categories,
+            'categories': normal_categories,
+        }
+
     class Meta:
         verbose_name = verbose_name_plural = "分类"
 
@@ -73,6 +91,37 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name="标签")
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.PROTECT)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+
+    @staticmethod
+    def get_by_tag(tag_id):
+        try:
+            tag = Tag.objects.get(id=tag_id)
+        except Tag.DoesNotExist:
+            tag = None
+            post_list = []
+        else:
+            post_list = tag.post_set.filter(status=Post.STATUS_NORMAL) \
+                .select_related("owner", "category")
+            
+        return post_list, tag
+    
+    @staticmethod
+    def get_by_category(category_id):
+        try:
+            category = Tag.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            category = None
+            post_list = []
+        else:
+            post_list = category.post_set.filter(status=Post.STATUS_NORMAL) \
+                .select_related("owner", "category")
+            
+        return post_list, category
+
+    @classmethod
+    def latest_posts(cls):
+        queryset = cls.objects.filter(status=Post.STATUS_NORMAL)
+        return queryset   
 
     # Meta 用于配置model属性
     class Meta:

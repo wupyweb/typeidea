@@ -18,8 +18,16 @@ from django.contrib import admin
 from django.urls import path
 
 from typeidea.custom_site import custom_site
+from blog.views import post_list, post_detail
+# from config.views import links
 
 urlpatterns = [
     path('super_admin/', admin.site.urls),
     path("admin/", custom_site.urls),
+
+    path("", post_list),
+    path("category/<int:category_id>/", post_list),
+    path("tag/<int:tag_id>/", post_list),
+    path("post/<post_id>.html", post_detail),
+    # path("links/", links),
 ]
