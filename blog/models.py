@@ -91,6 +91,8 @@ class Post(models.Model):
     tag = models.ManyToManyField(Tag, verbose_name="标签")
     owner = models.ForeignKey(User, verbose_name="作者", on_delete=models.PROTECT)
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    pv = models.PositiveIntegerField(default=0)
+    uv = models.PositiveIntegerField(default=0)
 
     @staticmethod
     def get_by_tag(tag_id):
