@@ -78,7 +78,7 @@ class CategoryOwnerFilter(admin.SimpleListFilter):
         return queryset
     
 
-@admin.register(Post, site=custom_site)
+@admin.register(Post)
 class PostAdmin(BaseOwnerAdmin):
     form = PostAdminForm
     list_display = (
@@ -113,7 +113,7 @@ class PostAdmin(BaseOwnerAdmin):
             }
         )
     )
-    filter_horizontal = ("tag",)
+    # filter_horizontal = ("tag",)
     list_display_links = []
     list_filter = (CategoryOwnerFilter,)
     search_fields = ("title", "category__name")
@@ -133,7 +133,7 @@ class PostAdmin(BaseOwnerAdmin):
     def operator(self, obj):
         return format_html(
             "<a href='{}'>编辑</a>",
-            reverse("cus_admin:blog_post_change", args=(obj.id,))
+            reverse("admin:blog_post_change", args=(obj.id,))
         )
     operator.short_description = "操作"
 
@@ -145,15 +145,15 @@ class PostAdmin(BaseOwnerAdmin):
         qs = super().get_queryset(request)
         return qs.filter(owner=request.user)
     
-    class Media:
-        css = {
-            "all": ("https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css",),
-        }
-        js = ("https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js",)
+    # class Media:
+    #     css = {
+    #         "all": ("https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css",),
+    #     }
+    #     js = ("https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/js/bootstrap.bundle.js",)
 
 
 
-@admin.register(LogEntry, site=custom_site)
+@admin.register(LogEntry)
 class LogEntryAdmin(admin.ModelAdmin):
     list_display = (
         "object_repr", "object_id", "action_flag", "user",

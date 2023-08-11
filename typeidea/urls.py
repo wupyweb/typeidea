@@ -18,16 +18,16 @@ from django.contrib import admin
 from django.urls import path
 
 from typeidea.custom_site import custom_site
-from blog.views import post_list, post_detail
+from blog.views import post_list, post_detail, PostDetailView, PostListView, IndexView, CategoryView, TagView
 # from config.views import links
 
 urlpatterns = [
-    path('super_admin/', admin.site.urls),
-    path("admin/", custom_site.urls),
+    path('admin/', admin.site.urls),
+    # path("admin/", custom_site.urls),
 
-    path("", post_list, name="index"),
-    path("category/<int:category_id>/", post_list, name="category-list"),
-    path("tag/<int:tag_id>/", post_list, name="tag-list"),
-    path("post/<post_id>.html", post_detail, name="post-detail"),
+    path("", IndexView.as_view(), name="index"),
+    path("category/<int:category_id>/", CategoryView.as_view(), name="category-list"),
+    path("tag/<int:tag_id>/", TagView.as_view(), name="tag-list"),
+    path("post/<int:post_id>.html", PostDetailView.as_view(), name="post-detail"),   #pk,主键查询
     # path("links/", links, name="links"),
 ]
