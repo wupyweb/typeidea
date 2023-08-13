@@ -1,0 +1,39 @@
+{% extends "./base.html" %}
+{% block title %} {{ post.title }} - {% endblock %}
+    
+{% block main %}
+    {% if post %}
+    <h1>{{ post.title }}</h1>
+    <div>
+        <span>作者：{{ post.owner.username }}</span>
+        <span>分类：{{ post.category.name }}</span>
+    </div>
+    <hr>
+    <p>{{ post.content }}</p>
+    {% endif %}
+
+    <hr>
+    <div class="comment">
+        <form class="form-group" action="{% url 'comment' %}" method="post">
+            {% csrf_token %}
+            <input name="target" type="hidden" value="{{ request.path }}" />
+            {{ comment_form }}
+            <button type="submit" class="btn btn-primary">提交</button>
+        </form>
+
+        <!-- 评论列表 -->
+        <ul class="list-group">
+            {% for comment in comment_list %}
+            <li class="list-group-item">
+                <div class="nickname">
+                    <a href="{{ comment.website }}">{{ comment.nickname }}</a>
+                    <span>{{ comment.created_time }}</span>
+                </div>
+                <div class="comment-content">
+                    {{ comment.content }}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

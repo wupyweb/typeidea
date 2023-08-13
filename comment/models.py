@@ -12,7 +12,8 @@ class Comment(models.Model):
         (STATUS_DELETE, '删除'),
     )
 
-    target = models.ForeignKey(Post, verbose_name="评论目标", on_delete=models.PROTECT)
+    # target = models.ForeignKey(Post, verbose_name="评论目标", on_delete=models.PROTECT)
+    target = models.CharField(max_length=100, verbose_name="评论目标url")
     content = models.CharField(max_length=2000, verbose_name="内容")
     nickname = models.CharField(max_length=50, verbose_name="昵称")
     website = models.URLField(verbose_name="网站")
@@ -24,6 +25,13 @@ class Comment(models.Model):
         verbose_name="状态"
     )
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+
+    @classmethod
+    def get_by_target(cls, target):
+        """
+        获取评论
+        """
+        return cls.objects.filter(target=target, status=cls.STATUS_NORMAL).order_by('-created_time')
 
     class Meta:
         verbose_name = verbose_name_plural = "评论"
