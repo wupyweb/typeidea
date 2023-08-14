@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.css">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_head %}
+    {% endblock %}
     <title>{% block title %}首页 - {% endblock %}typeidea 博客系统</title>
 </head>
 <body>

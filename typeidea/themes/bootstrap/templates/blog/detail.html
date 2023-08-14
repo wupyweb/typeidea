@@ -1,39 +1,30 @@
 {% extends "./base.html" %}
+{% load comment_block %}
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/styles/atom-one-dark.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/highlight.min.js"></script>
+
+<!-- and it's easy to individually load additional languages -->
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/languages/python.min.js"></script>
+
+<script>hljs.highlightAll();</script>
+
+{% endblock %}
 {% block title %} {{ post.title }} - {% endblock %}
-    
+
 {% block main %}
-    {% if post %}
-    <h1>{{ post.title }}</h1>
-    <div>
-        <span>作者：{{ post.owner.username }}</span>
-        <span>分类：{{ post.category.name }}</span>
-    </div>
-    <hr>
-    <p>{{ post.content }}</p>
-    {% endif %}
-
-    <hr>
-    <div class="comment">
-        <form class="form-group" action="{% url 'comment' %}" method="post">
-            {% csrf_token %}
-            <input name="target" type="hidden" value="{{ request.path }}" />
-            {{ comment_form }}
-            <button type="submit" class="btn btn-primary">提交</button>
-        </form>
-
-        <!-- 评论列表 -->
-        <ul class="list-group">
-            {% for comment in comment_list %}
-            <li class="list-group-item">
-                <div class="nickname">
-                    <a href="{{ comment.website }}">{{ comment.nickname }}</a>
-                    <span>{{ comment.created_time }}</span>
-                </div>
-                <div class="comment-content">
-                    {{ comment.content }}
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+{% if post %}
+<h1>{{ post.title }}</h1>
+<div>
+    <span>作者：{{ post.owner.username }}</span>
+    <span>分类：{{ post.category.name }}</span>
+</div>
+<hr>
+<p>
+    {% autoescape off %}
+    {{ post.content_html }}
+    {% endautoescape %}
+</p>
+{% endif %}
+{% comment_block request.path %}
 {% endblock %}
