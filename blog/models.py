@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.functional import cached_property
+
 import mistune
 
 # Create your models here.
@@ -131,6 +133,10 @@ class Post(models.Model):
     def latest_posts(cls):
         queryset = cls.objects.filter(status=Post.STATUS_NORMAL)
         return queryset   
+    
+    @cached_property
+    def tags(self):
+        return ','.join(self.tag.values_list('name', flat=True))
 
     # Meta 用于配置model属性
     class Meta:

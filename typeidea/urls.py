@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.sitemaps import views as sitemap_views
 
 from typeidea.custom_site import custom_site
 from blog.views import (
@@ -25,6 +26,8 @@ from blog.views import (
 )
 from config.views import LinkListView
 from comment.views import CommentView
+from blog.rss import LatestPostsFeed
+from blog.sitemap import PostSitemap
 
 # from config.views import links
 
@@ -40,4 +43,6 @@ urlpatterns = [
     path("author/<int:owner_id>/", AuthorView.as_view(), name="author"),
     path("links/", LinkListView.as_view(), name="links"),
     path("comment/", CommentView.as_view(), name="comment"),
+    path("rss/", LatestPostsFeed(), name="rss"),
+    path("sitemap.xml", sitemap_views.sitemap, {'sitemaps': {'posts': PostSitemap}}),
 ]

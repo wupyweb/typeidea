@@ -1,8 +1,11 @@
 from typing import Any
+from datetime import date
 from django.db.models.query import QuerySet
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
-from django.db.models import Q
+from django.db.models import Q, F
+from django.core.cache import cache
 
 from blog.models import Post, Tag, Category
 from comment.forms import CommentForm
@@ -104,6 +107,45 @@ class PostDetailView(CommonViewMixin, DetailView):
     #         "comment_list": Comment.get_by_target(self.request.path)
     #     })
     #     return context
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        self.handle_visited()
+        return super().get(request, *args, **kwargs)
+
+    def handle_visited(self):
+        # Set the increase_pv and increase_uv variables to False
+        increase_pv = False
+        increase_uv = False
+        # Get the user id from the request
+        uid = self.request.uid
+        # Create the pv and uv keys
+        pv_key = "pv:%s:%s" % (self.request.path, uid)
+        uv_key = "uv:%s:%s" % (self.request.path, uid)
+        # Check if the pv key exists in the cache
+        if not cache.get(pv_key):
+            # Set the increase_pv variable to True
+            increase_pv = True
+            # Set the pv key in the cache with a value of 1
+            cache.set(pv_key, 1, 1*60)
+            
+        # Check if the uv key exists in the cache
+        if not cache.get(uv_key):
+            # Set the increase_uv variable to True
+            increase_uv = True
+            # Set the uv key in the cache with a value of 1
+            cache.set(uv_key, 1, 24*60*60)
+
+        # If the increase_pv or increase_uv variables are True, update the Post object with the pv and uv values
+        if increase_pv and increase_uv:
+            # Update the Post object with the pv and uv values
+            Post.objects.filter(pk=self.kwargs["post_id"]).update(pv=F("pv") + 1, uv=F("uv") + 1)
+        # If the increase_pv variable is True, update the Post object with the pv value
+        elif increase_pv:
+            Post.objects.filter(pk=self.kwargs["post_id"]).update(pv=F("pv") + 1)
+        # If the increase_uv variable is True, update the Post object with the uv value
+        elif increase_uv:
+            Post.objects.filter(pk=self.kwargs["post_id"]).update(uv=F("uv") + 1)
+        
 
 
 class PostListView(ListView):
