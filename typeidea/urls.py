@@ -31,6 +31,8 @@ from comment.views import CommentView
 from blog.rss import LatestPostsFeed
 from blog.sitemap import PostSitemap
 
+from typeidea.api import api
+
 # from config.views import links
 
 urlpatterns = [
@@ -48,4 +50,6 @@ urlpatterns = [
     path("rss/", LatestPostsFeed(), name="rss"),
     path("sitemap.xml", sitemap_views.sitemap, {'sitemaps': {'posts': PostSitemap}}),
     path("ckeditor/", include('ckeditor_uploader.urls')),
+
+    path("api/", api.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

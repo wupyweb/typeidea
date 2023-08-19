@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'comment',
     'ckeditor',
     'ckeditor_uploader',
+    'ninja',    # in order to collect django-ninja css/js
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -147,3 +148,4 @@ CKEDITOR_CONFIGS = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CKEDITOR_UPLOAD_PATH = 'article_images'
+# NINJA_DOCS_VIEW = 'redoc'
