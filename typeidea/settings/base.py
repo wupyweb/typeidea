@@ -149,3 +149,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CKEDITOR_UPLOAD_PATH = 'article_images'
 # NINJA_DOCS_VIEW = 'redoc'
+NINJA_PAGINATION_PER_PAGE = 10
